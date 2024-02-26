@@ -40,15 +40,14 @@ class _RockQuestionWidgetState extends State<RockQuestionWidget> {
     });
   }
 
-  // Utility function to launch URL
+
   Future<void> _launchURL() async {
-    const url = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'; // Rickroll link
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
+    final Uri url = Uri.parse('https://www.youtube.com/watch?v=dQw4w9WgXcQ'); // Rickroll link
+    if (!await launchUrl(url)) {
       throw 'Could not launch $url';
     }
   }
+
   
 
   @override
