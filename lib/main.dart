@@ -1,4 +1,93 @@
+// import 'package:flutter/material.dart';
+
+// void main() {
+//   runApp(const MyApp());
+// }
+
+// class MyApp extends StatelessWidget {
+//   const MyApp({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return const MaterialApp(
+//       home: RockQuestionWidget(),
+//     );
+//   }
+// }
+
+// class RockQuestionWidget extends StatefulWidget {
+//   const RockQuestionWidget({super.key});
+
+//   @override
+//   RockQuestionWidgetState createState() => RockQuestionWidgetState();
+// }
+
+// class RockQuestionWidgetState extends State<RockQuestionWidget> {
+//   String _displayText = 'Do you like rock?';
+//   String _linkMessage = '';
+//   final TextEditingController _controller = TextEditingController();
+
+//   void _updateDisplayText() {
+//     setState(() {
+//       if (_controller.text.trim().toLowerCase() == 'linkin park') {
+//         _displayText = 'Oh, you have taste in music!';
+//         _linkMessage = 'Tap here for a surprise: https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+//       } else {
+//         _displayText = 'Give me a normal rock group name';
+//         _linkMessage = '';
+//       }
+//     });
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text('Music Taste'),
+//       ),
+//       body: Center(
+//         child: Column(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: [
+//             Text(_displayText, style: const TextStyle(fontSize: 20)),
+//             Padding(
+//               padding: const EdgeInsets.all(16),
+//               child: TextField(
+//                 key: const Key('responseField'),
+//                 controller: _controller,
+//                 decoration: const InputDecoration(
+//                   labelText: 'Your answer',
+//                 ),
+//                 onSubmitted: (_) => _updateDisplayText(),
+//               ),
+//             ),
+//             if (_linkMessage.isNotEmpty)
+//               InkWell(
+//                 onTap: () {
+//                   ScaffoldMessenger.of(context).showSnackBar(
+//                     const SnackBar(
+//                       content: Text('Copy the link to see the surprise!'),
+//                     ),
+//                   );
+//                 },
+//                 child: Text(
+//                   _linkMessage,
+//                   style: const TextStyle(color: Colors.blue, 
+//                   decoration: TextDecoration.underline),
+//                 ),
+//               ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+
+
+
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,23 +108,36 @@ class RockQuestionWidget extends StatefulWidget {
   const RockQuestionWidget({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _RockQuestionWidgetState createState() => _RockQuestionWidgetState();
+  State<RockQuestionWidget> createState() => _RockQuestionWidgetState();
 }
 
 class _RockQuestionWidgetState extends State<RockQuestionWidget> {
   String _displayText = 'Do you like rock?';
+  bool _showLink = false;
   final TextEditingController _controller = TextEditingController();
 
   void _updateDisplayText() {
     setState(() {
       if (_controller.text.trim().toLowerCase() == 'linkin park') {
         _displayText = 'Oh you have taste in music!';
+        _showLink = false; 
       } else {
-        _displayText = 'Give me normal rock group name';
+        _displayText = 'Give me a normal rock group name';
+        _showLink = true; 
       }
     });
   }
+
+  // Utility function to launch URL
+  Future<void> _launchURL() async {
+    const url = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'; // Rickroll link
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -46,22 +148,28 @@ class _RockQuestionWidgetState extends State<RockQuestionWidget> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          children: [
             Text(_displayText, style: const TextStyle(fontSize: 20)),
             Padding(
               padding: const EdgeInsets.all(16),
               child: TextField(
                 key: const Key('responseField'),
                 controller: _controller,
-                // ignore: prefer_const_constructors
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Your answer',
                 ),
-                onSubmitted: (value) {
-                  _updateDisplayText();
-                },
+                onSubmitted: (_) => _updateDisplayText(), 
               ),
             ),
+            if (_showLink) // Display link if _showLink is true
+              GestureDetector(
+                onTap: _launchURL,
+                child: const Text(
+                  'Discover more here!',
+                  style: TextStyle(fontSize: 18, color: Colors.blue,
+                  decoration: TextDecoration.underline),
+                ),
+              ),
           ],
         ),
       ),
