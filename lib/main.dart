@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:my_project/lab2/login_page.dart';
-import 'package:my_project/lab2/main_page.dart';
-import 'package:my_project/lab2/registration_page.dart';
-import 'package:my_project/lab2/user_profile_page.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+import 'package:my_project/lab2/reusable_widgets/app_routes.dart';
+
+
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -15,19 +12,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Fitness App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue,),
       initialRoute: '/registration',
-      routes: {
-        '/': (context) => const MainPage(),
-        '/login': (context) => const LoginPage(),
-        '/registration': (context) => const RegistrationPage(),
-        '/profile': (context) => const UserProfilePage(),
-      },
+      routes: appRoutes,
     );
   }
 }
-
 
 
