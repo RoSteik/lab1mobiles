@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:my_project/lab2/login_page.dart';
+
 import 'package:my_project/lab2/reusable_widgets/login_and_registration/custom_button.dart';
 import 'package:my_project/lab2/reusable_widgets/login_and_registration/custom_text_button.dart';
 import 'package:my_project/lab2/reusable_widgets/login_and_registration/custom_text_field.dart';
@@ -19,10 +19,7 @@ List<Widget> registrationPageChildren(BuildContext context) {
     ),
     CustomTextButton(
       text: 'Already have an account? Login',
-      onPressed: () => Navigator.push(
-        context,
-        MaterialPageRoute<void>(builder: (context) => const LoginPage()),
-      ),
+      onPressed: () => Navigator.pushNamed(context, '/login'),
     ),
   ];
 }
