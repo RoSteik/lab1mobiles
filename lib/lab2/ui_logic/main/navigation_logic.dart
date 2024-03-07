@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_project/lab2/ui_logic/main/pages_list.dart';
 
 class NavigationLogic {
+
   static void onItemTapped(
     BuildContext context,
     int index,
