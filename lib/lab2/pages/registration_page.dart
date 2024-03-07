@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:my_project/lab2/reusable_widgets/login_and_registration/registration_page_children.dart';
+
+import 'package:my_project/lab2/ui_logic/login_and_registration/registration_page_children.dart';
 
 class RegistrationPage extends StatelessWidget {
   const RegistrationPage({super.key});

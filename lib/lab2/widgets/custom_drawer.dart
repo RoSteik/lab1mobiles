@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:my_project/lab2/reusable_widgets/main/drawer_items.dart';
+
+import 'package:my_project/lab2/ui_logic/main/drawer_items.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key});

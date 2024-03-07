@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:my_project/lab2/login_page.dart';
-import 'package:my_project/lab2/main_page.dart';
-import 'package:my_project/lab2/registration_page.dart';
-import 'package:my_project/lab2/user_profile_page.dart';
+import 'package:my_project/lab2/pages/login_page.dart';
+import 'package:my_project/lab2/pages/main_page.dart';
+import 'package:my_project/lab2/pages/registration_page.dart';
+import 'package:my_project/lab2/pages/user_profile_page.dart';
 
 final Map<String, WidgetBuilder> appRoutes = {
   '/': (context) => const MainPage(),

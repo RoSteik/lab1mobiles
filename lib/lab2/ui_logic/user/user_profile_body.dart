@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:my_project/lab2/reusable_widgets/user/responsive_config.dart';
+
+import 'package:my_project/lab2/ui_logic/responsive_config.dart';
+
 
 
 List<Widget> userProfileBody(BuildContext context) {
   return [
     CircleAvatar(
       radius: ResponsiveConfig.avatarRadius(context),
-      backgroundImage: const NetworkImage('https://via.placeholder.com/150'),
+      backgroundImage: const AssetImage('assets/place_holder.jpg'),
     ),
     SizedBox(height: ResponsiveConfig.spacing(context)),
     Text(

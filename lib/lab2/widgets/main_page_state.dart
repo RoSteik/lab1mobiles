@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:my_project/lab2/main_page.dart';
-import 'package:my_project/lab2/reusable_widgets/main/custom_bottom_navigation_bar.dart';
-import 'package:my_project/lab2/reusable_widgets/main/custom_drawer.dart';
-import 'package:my_project/lab2/reusable_widgets/main/navigation_logic.dart';
-import 'package:my_project/lab2/reusable_widgets/main/pages_list.dart';
+import 'package:my_project/lab2/pages/main_page.dart';
+
+import 'package:my_project/lab2/ui_logic/main/navigation_logic.dart';
+
+import 'package:my_project/lab2/ui_logic/main/pages_list.dart';
+import 'package:my_project/lab2/widgets/custom_bottom_navigation_bar.dart';
+import 'package:my_project/lab2/widgets/custom_drawer.dart';
 
 class MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
@@ -27,7 +29,9 @@ class MainPageState extends State<MainPage> {
       appBar: AppBar(title: const Text('Fitness Tracker')),
       drawer: const CustomDrawer(),
       body: Center(
-        child: pagesList(context)[_selectedIndex],
+        child: _selectedIndex < pagesList(context).length
+            ? pagesList(context).elementAt(_selectedIndex)
+            : Container(),
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
         selectedIndex: _selectedIndex,

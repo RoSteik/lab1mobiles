@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_project/lab2/reusable_widgets/main/responsive_config.dart';
+import 'package:my_project/lab2/ui_logic/responsive_config.dart';
 
 
 List<Widget> buildDrawerItems(BuildContext context) {
