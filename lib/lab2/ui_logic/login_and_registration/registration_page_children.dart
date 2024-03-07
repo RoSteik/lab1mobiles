@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:my_project/lab2/ui_logic/login_and_registration/custom_text_button.dart';
-import 'package:my_project/lab2/ui_logic/login_and_registration/custom_text_field.dart';
+import 'package:my_project/lab2/widgets/custom_text_button.dart';
+import 'package:my_project/lab2/widgets/custom_text_field.dart';
 import 'package:my_project/lab2/widgets/custom_button.dart';
 
 
