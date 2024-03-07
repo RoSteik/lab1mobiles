@@ -3,7 +3,7 @@ import 'package:my_project/lab2/pages/main_page.dart';
 import 'package:my_project/lab2/pages/registration_page.dart';
 
 import 'package:my_project/lab2/ui_logic/login_and_registration/custom_text_field.dart';
-import 'package:my_project/lab2/ui_logic/login_and_registration/navigation_text_button.dart';
+import 'package:my_project/lab2/widgets/navigation_text_button.dart';
 
 
 
