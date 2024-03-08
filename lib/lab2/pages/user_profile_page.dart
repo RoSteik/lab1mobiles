@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:my_project/lab2/ui_logic/user/user_profile_appbar.dart';
-import 'package:my_project/lab2/ui_logic/user/user_profile_body.dart';
+import 'package:my_project/lab2/elements/user/user_profile_appbar.dart';
+import 'package:my_project/lab2/elements/user/user_profile_body.dart';
 
 
 class UserProfilePage extends StatelessWidget {

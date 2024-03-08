@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_project/lab2/ui_logic/main/pages_list.dart';
+import 'package:my_project/lab2/elements/main/pages_list.dart';
 
 class NavigationLogic {
 

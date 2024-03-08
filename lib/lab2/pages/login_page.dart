@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:my_project/lab2/ui_logic/login_and_registration/login_page_children.dart';
+import 'package:my_project/lab2/elements/login_and_registration/login_page_children.dart';
 
 
 class LoginPage extends StatelessWidget {

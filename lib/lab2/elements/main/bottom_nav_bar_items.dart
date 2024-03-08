@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:my_project/lab2/ui_logic/responsive_config.dart';
+import 'package:my_project/lab2/elements/responsive_config.dart';
 
 List<BottomNavigationBarItem> buildBottomNavBarItems(BuildContext context) {
   final iconSize = ResponsiveConfig.iconSize(context);
