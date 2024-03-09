@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Fitness App',
       theme: ThemeData(primarySwatch: Colors.blue,),
-      initialRoute: '/registration',
+      initialRoute: '/login',
       routes: appRoutes,
     );
   }
