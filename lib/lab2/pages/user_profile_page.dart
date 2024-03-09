@@ -70,7 +70,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     Text(
                       'Email: ${_user!.email}',
                       style: TextStyle(
-                          fontSize: ResponsiveConfig.fontSizeEmail(context),),
+                        fontSize: ResponsiveConfig.fontSizeEmail(context),
+                      ),
                     ),
                     SizedBox(height: ResponsiveConfig.spacing(context)),
                   ],
