@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:my_project/lab2/elements/main/drawer_items.dart';
+import 'package:my_project/lab2/elements/responsive_config.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key});
@@ -10,7 +10,30 @@ class CustomDrawer extends StatelessWidget {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
-        children: buildDrawerItems(context),
+        children: [
+          const DrawerHeader(
+            decoration: BoxDecoration(color: Colors.blue),
+            child: Text('Menu'),
+          ),
+          ListTile(
+            title: Text(
+              'Home',
+              style: TextStyle(
+                fontSize: ResponsiveConfig.contentFontSize(context),
+              ),
+            ),
+            onTap: () => Navigator.pop(context),
+          ),
+          ListTile(
+            title: Text(
+              'Settings',
+              style: TextStyle(
+                fontSize: ResponsiveConfig.drawerFontSize(context),
+              ),
+            ),
+            onTap: () => Navigator.pop(context),
+          ),
+        ],
       ),
     );
   }
