@@ -1,10 +1,13 @@
+import 'dart:convert';
+
 import 'package:my_project/lab2/logic/model/user.dart';
 import 'package:my_project/lab2/logic/service/user_storage_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class IAuthService {
   Future<String?> register(String name, String email, String password);
 
-  Future<User?> login(String email, String password);
+  Future<bool> login(String email, String password);
 }
 
 class AuthService implements IAuthService {
@@ -25,11 +28,16 @@ class AuthService implements IAuthService {
   }
 
   @override
-  Future<User?> login(String email, String password) async {
-    final user = await _userStorageService.getUser(email);
-    if (user != null && user.password == password) {
-      return user;
+  Future<bool> login(String email, String password) async {
+    final prefs = await SharedPreferences.getInstance();
+    final userString = prefs.getString(email);
+    if (userString != null) {
+      final userMap = jsonDecode(userString) as Map<String, dynamic>;
+      if (password == userMap['password']) {
+        await prefs.setString('lastLoggedInUser', email);
+        return true;
+      }
     }
-    return null;
+    return false;
   }
 }
