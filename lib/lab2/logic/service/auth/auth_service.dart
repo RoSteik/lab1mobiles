@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:my_project/lab2/logic/model/user.dart';
-import 'package:my_project/lab2/logic/service/user_storage_service.dart';
+import 'package:my_project/lab2/logic/service/auth/user_storage_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class IAuthService {

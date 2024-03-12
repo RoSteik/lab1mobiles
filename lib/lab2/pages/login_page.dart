@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:my_project/lab2/logic/service/auth_service.dart';
 
+import 'package:my_project/lab2/logic/service/auth/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -12,6 +12,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+
   final AuthService _authService = AuthService();
 
   @override
@@ -22,19 +23,19 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _attemptLogin() async {
-    final user = await _authService.login(
-        _emailController.text, _passwordController.text,);
-    if (user != null) {
-      if (mounted) {
-        Navigator.pushNamed(context, '/');
-      }
-    } else {
-      if (mounted) {
+    final email = _emailController.text;
+    final password = _passwordController.text;
+
+    final loggedIn = await _authService.login(email, password);
+
+    if (mounted) {
+      if (loggedIn) {
+        Navigator.pushReplacementNamed(context, '/');
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Invalid email or password')),
         );
       }
-
     }
   }
 
