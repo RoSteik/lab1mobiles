@@ -50,6 +50,20 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
+  Future<void> _loadFitnessDataList() async {
+    final data = await _fitnessDataService.loadFitnessDataList();
+    setState(() => _fitnessDataList = data);
+  }
+
+  Future<void> _addFitnessData() async {
+    await _showAddDataDialog();
+  }
+
+  Future<void> _deleteFitnessData(int index) async {
+    await _fitnessDataService.deleteFitnessData(index);
+    _loadFitnessDataList();
+  }
+
   Future<void> _showAddDataDialog() async {
     final dateController = TextEditingController();
     final stepsController = TextEditingController();
@@ -113,20 +127,6 @@ class _MainPageState extends State<MainPage> {
         );
       },
     );
-  }
-
-  Future<void> _loadFitnessDataList() async {
-    final data = await _fitnessDataService.loadFitnessDataList();
-    setState(() => _fitnessDataList = data);
-  }
-
-  Future<void> _addFitnessData() async {
-    await _showAddDataDialog();
-  }
-
-  Future<void> _deleteFitnessData(int index) async {
-    await _fitnessDataService.deleteFitnessData(index);
-    _loadFitnessDataList();
   }
 
   @override
