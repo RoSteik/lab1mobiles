@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:my_project/lab2/elements/responsive_config.dart';
 import 'package:my_project/lab2/logic/model/user.dart';
+import 'package:my_project/lab2/logic/service/auth/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserProfilePage extends StatefulWidget {
@@ -14,12 +15,42 @@ class UserProfilePage extends StatefulWidget {
 
 class _UserProfilePageState extends State<UserProfilePage> {
   User? _user;
+  final IAuthService _authService = AuthService();
 
   @override
   void initState() {
     super.initState();
     _loadUserData();
   }
+
+  void _showLogoutConfirmationDialog() {
+    showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Log out'),
+          content: const Text('Are you sure you want to log out?'),
+          actions: [
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Log Out'),
+              onPressed: () async {
+                await _authService.logout();
+                Navigator.of(context).pop();
+                Navigator.pushReplacementNamed(context, '/login');
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 
   Future<void> _loadUserData() async {
     final prefs = await SharedPreferences.getInstance();
@@ -42,6 +73,16 @@ class _UserProfilePageState extends State<UserProfilePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('User Profile'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pushReplacementNamed(context, '/'),
+        ),
+        actions: [
+          TextButton(
+            onPressed: _showLogoutConfirmationDialog,
+            child: const Text('Log Out'),
+          ),
+        ],
       ),
       body: Center(
         child: Padding(

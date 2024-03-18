@@ -4,17 +4,16 @@ import 'package:my_project/lab2/logic/model/fitness_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class IFitnessDataService {
-
   Future<List<FitnessData>> loadFitnessDataList();
+
   Future<void> saveFitnessDataList(List<FitnessData> dataList);
+
   Future<void> addFitnessData(FitnessData data);
+
   Future<void> deleteFitnessData(int index);
-
-
 }
 
-
-class FitnessDataService implements IFitnessDataService{
+class FitnessDataService implements IFitnessDataService {
   static const _fitnessDataKey = 'fitnessData';
 
   @override
@@ -25,8 +24,10 @@ class FitnessDataService implements IFitnessDataService{
       final List<dynamic> jsonDataList =
           jsonDecode(fitnessDataString) as List<dynamic>;
       return jsonDataList
-          .map((jsonData) =>
-              FitnessData.fromJson(jsonData as Map<String, dynamic>),)
+          .map(
+            (jsonData) =>
+                FitnessData.fromJson(jsonData as Map<String, dynamic>),
+          )
           .toList();
     }
     return [];
@@ -35,8 +36,10 @@ class FitnessDataService implements IFitnessDataService{
   @override
   Future<void> saveFitnessDataList(List<FitnessData> dataList) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString(_fitnessDataKey,
-        jsonEncode(dataList.map((data) => data.toJson()).toList()),);
+    prefs.setString(
+      _fitnessDataKey,
+      jsonEncode(dataList.map((data) => data.toJson()).toList()),
+    );
   }
 
   @override
