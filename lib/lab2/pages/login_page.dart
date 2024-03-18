@@ -70,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
         return AlertDialog(
           title: Text(title),
           content: Text(message),
-          actions: <Widget>[
+          actions: [
             TextButton(
               child: const Text('OK'),
               onPressed: () => Navigator.of(context).pop(),
@@ -88,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
         padding: const EdgeInsets.all(20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          children: [
             TextField(
               controller: _emailController,
               decoration: const InputDecoration(labelText: 'Email'),
