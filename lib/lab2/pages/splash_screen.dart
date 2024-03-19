@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -16,11 +16,15 @@ class _SplashScreenState extends State<SplashScreen> {
     _navigateToNextPage();
   }
 
-  void _navigateToNextPage() async {
+  Future<void> _navigateToNextPage() async {
     final prefs = await SharedPreferences.getInstance();
     final isLoggedIn = prefs.getString('lastLoggedInUser') != null;
+    final connectivityResult = await (Connectivity().checkConnectivity());
 
     if (isLoggedIn) {
+      if (connectivityResult == ConnectivityResult.none) {
+        _showConnectivityDialog();
+      }
       if (mounted) {
         Navigator.of(context).pushReplacementNamed('/home');
       }
@@ -29,6 +33,28 @@ class _SplashScreenState extends State<SplashScreen> {
         Navigator.of(context).pushReplacementNamed('/login');
       }
     }
+  }
+
+  void _showConnectivityDialog() {
+    showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('No Internet Connection'),
+          content:
+              const Text('You are logged in but not connected to the internet.'
+                  ' Some features may not be available.'),
+          actions: [
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
