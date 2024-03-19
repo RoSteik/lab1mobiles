@@ -46,6 +46,7 @@ class AuthService implements IAuthService {
     return false;
   }
 
+  @override
   Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('lastLoggedInUser');

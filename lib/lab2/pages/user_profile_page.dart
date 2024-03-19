@@ -1,13 +1,10 @@
-
-
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:my_project/lab2/elements/responsive_config.dart';
 import 'package:my_project/lab2/logic/model/user.dart';
+import 'package:my_project/lab2/logic/service/auth/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../logic/service/auth/auth_service.dart';
 
 
 

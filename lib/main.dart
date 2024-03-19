@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_project/lab2/elements/app_routes.dart';
 
-import 'lab2/pages/splash_screen.dart';
+import 'package:my_project/lab2/pages/splash_screen.dart';
 
 void main() => runApp(const MyApp());
 
