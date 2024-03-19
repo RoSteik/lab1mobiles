@@ -1,10 +1,15 @@
+
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:my_project/lab2/elements/responsive_config.dart';
 import 'package:my_project/lab2/logic/model/user.dart';
-import 'package:my_project/lab2/logic/service/auth/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../logic/service/auth/auth_service.dart';
+
+
 
 class UserProfilePage extends StatefulWidget {
   const UserProfilePage({super.key});
@@ -21,6 +26,22 @@ class _UserProfilePageState extends State<UserProfilePage> {
   void initState() {
     super.initState();
     _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final lastLoggedInUserEmail = prefs.getString('lastLoggedInUser');
+
+    if (lastLoggedInUserEmail != null) {
+      final userString = prefs.getString(lastLoggedInUserEmail);
+      if (userString != null) {
+        final Map<String, dynamic> userMap =
+            jsonDecode(userString) as Map<String, dynamic>;
+        setState(() {
+          _user = User.fromJson(userMap);
+        });
+      }
+    }
   }
 
   void _showLogoutConfirmationDialog() {
@@ -51,23 +72,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
     );
   }
 
-
-  Future<void> _loadUserData() async {
-    final prefs = await SharedPreferences.getInstance();
-    final lastLoggedInUserEmail = prefs.getString('lastLoggedInUser');
-
-    if (lastLoggedInUserEmail != null) {
-      final userString = prefs.getString(lastLoggedInUserEmail);
-      if (userString != null) {
-        final Map<String, dynamic> userMap =
-        jsonDecode(userString) as Map<String, dynamic>;
-        setState(() {
-          _user = User.fromJson(userMap);
-        });
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,7 +79,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
         title: const Text('User Profile'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pushReplacementNamed(context, '/'),
+          onPressed: () => Navigator.pushReplacementNamed(context, '/home'),
         ),
         actions: [
           TextButton(
