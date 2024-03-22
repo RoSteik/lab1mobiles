@@ -6,8 +6,6 @@ import 'package:my_project/lab2/logic/model/user.dart';
 import 'package:my_project/lab2/logic/service/auth/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
-
 class UserProfilePage extends StatefulWidget {
   const UserProfilePage({super.key});
 
@@ -41,6 +39,16 @@ class _UserProfilePageState extends State<UserProfilePage> {
     }
   }
 
+  Future<void> _logout() async {
+    await _authService.logout();
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
+    if (mounted) {
+      Navigator.pushReplacementNamed(context, '/login');
+    }
+  }
+
   void _showLogoutConfirmationDialog() {
     showDialog<void>(
       context: context,
@@ -56,12 +64,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
               },
             ),
             TextButton(
+              onPressed: _logout,
               child: const Text('Log Out'),
-              onPressed: () async {
-                await _authService.logout();
-                Navigator.of(context).pop();
-                Navigator.pushReplacementNamed(context, '/login');
-              },
             ),
           ],
         );
