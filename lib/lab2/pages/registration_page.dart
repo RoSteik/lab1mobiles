@@ -14,14 +14,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
   final _passwordController = TextEditingController();
   final AuthService _authService = AuthService();
 
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
   void _attemptRegister() async {
     final result = await _authService.register(
       _nameController.text,

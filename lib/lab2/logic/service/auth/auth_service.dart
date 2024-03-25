@@ -1,3 +1,4 @@
+
 import 'dart:convert';
 
 import 'package:my_project/lab2/logic/model/user.dart';
@@ -6,6 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class IAuthService {
   Future<String?> register(String name, String email, String password);
+
+  Future<void> logout();
 
   Future<bool> login(String email, String password);
 }
@@ -22,6 +25,8 @@ class AuthService implements IAuthService {
     if (existingUser != null) {
       return 'User already exists';
     }
+
+
     final newUser = User(name: name, email: email, password: password);
     await _userStorageService.saveUser(newUser);
     return null;
@@ -40,4 +45,11 @@ class AuthService implements IAuthService {
     }
     return false;
   }
+
+  @override
+  Future<void> logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('lastLoggedInUser');
+  }
+
 }
