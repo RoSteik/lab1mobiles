@@ -104,7 +104,6 @@ class _MainPageState extends State<MainPage> {
   }
 
   Future<void> _showAddDataDialog() async {
-    final dateController = TextEditingController();
     final stepsController = TextEditingController();
     final caloriesController = TextEditingController();
 
@@ -117,12 +116,6 @@ class _MainPageState extends State<MainPage> {
           content: SingleChildScrollView(
             child: ListBody(
               children: [
-                TextField(
-                  controller: dateController,
-                  decoration: const InputDecoration(
-                    hintText: 'Enter date (YYYY-MM-DD)',
-                  ),
-                ),
                 TextField(
                   controller: stepsController,
                   decoration: const InputDecoration(hintText: 'Enter steps'),
@@ -147,12 +140,10 @@ class _MainPageState extends State<MainPage> {
             TextButton(
               child: const Text('Add'),
               onPressed: () async {
-                final date = DateTime.tryParse(dateController.text);
                 final steps = int.tryParse(stepsController.text);
                 final calories = int.tryParse(caloriesController.text);
-                if (date != null && steps != null && calories != null) {
+                if (steps != null && calories != null) {
                   final newData = FitnessData(
-                    date: date,
                     steps: steps,
                     caloriesBurned: calories,
                   );
@@ -181,9 +172,10 @@ class _MainPageState extends State<MainPage> {
               itemBuilder: (context, index) {
                 final item = _fitnessDataList[index];
                 return ListTile(
-                  title: Text('Date: ${item.date.toIso8601String()},'
+                  title: Text(
                       'Steps: ${item.steps},'
-                      'Calories Burned: ${item.caloriesBurned}'),
+                      ' Calories Burned: ${item.caloriesBurned}'
+                  ),
                   trailing: Wrap(
                     spacing: 12,
                     children: [
