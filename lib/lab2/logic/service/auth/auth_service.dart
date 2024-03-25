@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:http/http.dart' as http;
 import 'package:my_project/lab2/logic/model/user.dart';
 import 'package:my_project/lab2/logic/service/auth/user_storage_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,22 +15,35 @@ abstract class IAuthService {
 }
 
 class AuthService implements IAuthService {
-  final IUserStorageService _userStorageService = UserStorageService();
+  final UserStorageService _userStorageService = UserStorageService();
+
+  final String _baseUrl = 'http://10.0.2.2:8080/api/users';
 
   @override
   Future<String?> register(String name, String email, String password) async {
-    if (!email.contains('@') || name.isEmpty || password.length < 6) {
-      return 'Invalid input';
-    }
-    final existingUser = await _userStorageService.getUser(email);
-    if (existingUser != null) {
-      return 'User already exists';
+    final connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult == ConnectivityResult.none) {
+      return 'No internet connection. '
+          'Please connect to the internet to sign up.';
     }
 
+    final response = await http.post(
+      Uri.parse('$_baseUrl/create'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'name': name,
+        'email': email,
+        'password': password,
+      }),
+    );
 
-    final newUser = User(name: name, email: email, password: password);
-    await _userStorageService.saveUser(newUser);
-    return null;
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final newUser = User(name: name, email: email, password: password);
+      await _userStorageService.saveUser(newUser);
+      return null;
+    } else {
+      return 'Failed to register user';
+    }
   }
 
   @override
@@ -50,5 +65,4 @@ class AuthService implements IAuthService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('lastLoggedInUser');
   }
-
 }
