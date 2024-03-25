@@ -18,21 +18,27 @@ class FitnessDataService {
       if (response.statusCode == 200) {
         final Map<String, dynamic> decodedResponse =
             jsonDecode(response.body) as Map<String, dynamic>;
-        final List<dynamic> fitnessDatas =
-            decodedResponse['_embedded']['fitness_datas'] as List<dynamic>;
-        final List<FitnessData> fitnessDataList = fitnessDatas
-            .map(
-              (dynamic item) =>
-                  FitnessData.fromJson(item as Map<String, dynamic>),
-            )
-            .toList();
 
-        await DatabaseHelper.instance.clearTable();
-        for (var data in fitnessDataList) {
-          await DatabaseHelper.instance.insert(data);
+        if (decodedResponse['_embedded'] != null &&
+            decodedResponse['_embedded']['fitness_datas'] != null) {
+          final List<dynamic> fitnessDatas =
+              decodedResponse['_embedded']['fitness_datas'] as List<dynamic>;
+          final List<FitnessData> fitnessDataList = fitnessDatas
+              .map(
+                (dynamic item) =>
+                    FitnessData.fromJson(item as Map<String, dynamic>),
+              )
+              .toList();
+
+          await DatabaseHelper.instance.clearTable();
+          for (var data in fitnessDataList) {
+            await DatabaseHelper.instance.insert(data);
+          }
+
+          return fitnessDataList;
+        } else {
+          return [];
         }
-
-        return fitnessDataList;
       } else {
         throw Exception('Failed to load fitness data from API');
       }
