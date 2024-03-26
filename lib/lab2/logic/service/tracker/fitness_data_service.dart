@@ -24,10 +24,8 @@ class FitnessDataService {
           final List<dynamic> fitnessDatas =
               decodedResponse['_embedded']['fitness_datas'] as List<dynamic>;
           final List<FitnessData> fitnessDataList = fitnessDatas
-              .map(
-                (dynamic item) =>
-                    FitnessData.fromJson(item as Map<String, dynamic>),
-              )
+              .map((dynamic item) =>
+                    FitnessData.fromJson(item as Map<String, dynamic>),)
               .toList();
 
           await DatabaseHelper.instance.clearTable();

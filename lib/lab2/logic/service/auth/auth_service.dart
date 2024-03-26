@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:my_project/lab2/logic/model/user.dart';
 import 'package:my_project/lab2/logic/service/auth/user_storage_service.dart';
@@ -48,6 +49,29 @@ class AuthService implements IAuthService {
 
   @override
   Future<bool> login(String email, String password) async {
+    final connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult != ConnectivityResult.none) {
+
+      final Uri fetchUserUri = Uri.parse('$_baseUrl/email/$email');
+
+      try {
+        final response = await http.get(fetchUserUri);
+        if (response.statusCode == 200) {
+          final body = jsonDecode(response.body);
+          final userMap = (body as List).first as Map<String, dynamic>;
+          if (password == userMap['password']) {
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.setString('lastLoggedInUser', email);
+            return true;
+          }
+        }
+      } catch (e) {
+        if (kDebugMode) {
+          print('Error fetching user from backend: $e');
+        }
+      }
+    }
+
     final prefs = await SharedPreferences.getInstance();
     final userString = prefs.getString(email);
     if (userString != null) {
