@@ -104,7 +104,7 @@ class _MainPageState extends State<MainPage> {
   }
 
   Future<void> _showAddDataDialog() async {
-    final dateController = TextEditingController();
+    final idController = TextEditingController();
     final stepsController = TextEditingController();
     final caloriesController = TextEditingController();
 
@@ -118,21 +118,20 @@ class _MainPageState extends State<MainPage> {
             child: ListBody(
               children: [
                 TextField(
-                  controller: dateController,
-                  decoration: const InputDecoration(
-                    hintText: 'Enter date (YYYY-MM-DD)',
-                  ),
+                  controller: idController,
+                  decoration: const InputDecoration(hintText: 'Enter id'),
+                  keyboardType: TextInputType.number,
                 ),
                 TextField(
                   controller: stepsController,
                   decoration: const InputDecoration(hintText: 'Enter steps'),
-                  keyboardType: TextInputType.number,
+                  keyboardType: TextInputType.text,
                 ),
                 TextField(
                   controller: caloriesController,
                   decoration:
                       const InputDecoration(hintText: 'Enter calories burned'),
-                  keyboardType: TextInputType.number,
+                  keyboardType: TextInputType.text,
                 ),
               ],
             ),
@@ -147,19 +146,17 @@ class _MainPageState extends State<MainPage> {
             TextButton(
               child: const Text('Add'),
               onPressed: () async {
-                final date = DateTime.tryParse(dateController.text);
-                final steps = int.tryParse(stepsController.text);
-                final calories = int.tryParse(caloriesController.text);
-                if (date != null && steps != null && calories != null) {
-                  final newData = FitnessData(
-                    date: date,
-                    steps: steps,
-                    caloriesBurned: calories,
-                  );
-                  await _fitnessDataService.addFitnessData(newData);
+                final id = int.parse(idController.text);
+                final steps = stepsController.text;
+                final calories = caloriesController.text;
+                final newData = FitnessData(
+                  id: id,
+                  steps: steps,
+                  caloriesBurned: calories,
+                );
+                await _fitnessDataService.addFitnessData(newData);
 
-                  _loadFitnessDataList();
-                }
+                _loadFitnessDataList();
               },
             ),
           ],
@@ -176,24 +173,40 @@ class _MainPageState extends State<MainPage> {
       ),
       drawer: const CustomDrawer(),
       body: _selectedIndex == 1
-          ? ListView.builder(
-              itemCount: _fitnessDataList.length,
-              itemBuilder: (context, index) {
-                final item = _fitnessDataList[index];
-                return ListTile(
-                  title: Text('Date: ${item.date.toIso8601String()},'
-                      'Steps: ${item.steps},'
-                      'Calories Burned: ${item.caloriesBurned}'),
-                  trailing: Wrap(
-                    spacing: 12,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.delete),
-                        onPressed: () => _deleteFitnessData(index),
-                      ),
-                    ],
-                  ),
-                );
+          ? FutureBuilder<List<FitnessData>>(
+              future: _fitnessDataService.loadFitnessDataList(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (snapshot.hasData) {
+                  return ListView.builder(
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      final item = snapshot.data![index];
+                      return ListTile(
+                        title: Text('Steps: ${item.steps}, '
+                            ' Calories Burned: ${item.caloriesBurned}'),
+                        trailing: Wrap(
+                          spacing: 12,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.delete),
+                              onPressed: () async {
+                                await _fitnessDataService
+                                    .deleteFitnessData(item.id);
+                                setState(() {});
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                } else {
+                  return const Center(child: Text('No data available'));
+                }
               },
             )
           : Center(
@@ -214,4 +227,5 @@ class _MainPageState extends State<MainPage> {
       ),
     );
   }
+
 }
