@@ -6,8 +6,6 @@ import 'package:my_project/lab2/logic/model/user.dart';
 
 abstract class IUserStorageService {
   Future<void> saveUser(User user);
-
-  Future<User?> getUser(String email);
 }
 
 class UserStorageService implements IUserStorageService {
@@ -26,17 +24,4 @@ class UserStorageService implements IUserStorageService {
 
   }
 
-  @override
-  Future<User?> getUser(String email) async {
-    final SharedPreferences prefs = await this.prefs;
-    final userString = prefs.getString(email);
-
-
-    if (userString != null) {
-      final Map<String, dynamic> userMap =
-          jsonDecode(userString) as Map<String, dynamic>;
-      return User.fromJson(userMap);
-    }
-    return null;
-  }
 }

@@ -2,6 +2,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 
 import 'package:my_project/lab2/logic/service/auth/auth_service.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -13,8 +14,6 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-
-  final AuthService _authService = AuthService();
 
   @override
   void initState() {
@@ -49,8 +48,8 @@ class _LoginPageState extends State<LoginPage> {
     } else {
       final email = _emailController.text;
       final password = _passwordController.text;
-
-      final loggedIn = await _authService.login(email, password);
+      final loggedIn = await Provider.of<AuthService>(context, listen: false)
+          .login(email, password);
 
       if (mounted) {
         if (loggedIn) {
@@ -61,7 +60,6 @@ class _LoginPageState extends State<LoginPage> {
         }
       }
     }
-
   }
 
   void _showDialog(String title, String content) {

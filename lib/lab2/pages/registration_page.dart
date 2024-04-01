@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_project/lab2/logic/service/auth/auth_service.dart';
+import 'package:provider/provider.dart';
 
 class RegistrationPage extends StatefulWidget {
   const RegistrationPage({super.key});
@@ -12,10 +13,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final AuthService _authService = AuthService();
 
   void _attemptRegister() async {
-    final result = await _authService.register(
+    final result =
+        await Provider.of<AuthService>(context, listen: false).register(
       _nameController.text,
       _emailController.text,
       _passwordController.text,
