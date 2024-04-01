@@ -15,7 +15,7 @@ class UserProfilePage extends StatefulWidget {
 
 class _UserProfilePageState extends State<UserProfilePage> {
   User? _user;
-  final IAuthService _authService = AuthService();
+  final AuthService _authService = AuthService();
 
   @override
   void initState() {
@@ -25,10 +25,10 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
   Future<void> _loadUserData() async {
     final prefs = await SharedPreferences.getInstance();
-    final lastLoggedInUserEmail = prefs.getString('lastLoggedInUser');
+    final lastLoggedInUser = prefs.getString('lastLoggedInUser');
 
-    if (lastLoggedInUserEmail != null) {
-      final userString = prefs.getString(lastLoggedInUserEmail);
+    if (lastLoggedInUser != null) {
+      final userString = prefs.getString(lastLoggedInUser);
       if (userString != null) {
         final Map<String, dynamic> userMap =
             jsonDecode(userString) as Map<String, dynamic>;

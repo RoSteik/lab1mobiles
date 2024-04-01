@@ -1,23 +1,27 @@
 class FitnessData {
-  DateTime date;
-  int steps;
-  int caloriesBurned;
+  int id;
+  String steps;
+  String caloriesBurned;
 
   FitnessData({
-    required this.date,
+    required this.id,
     required this.steps,
     required this.caloriesBurned,
   });
 
-  Map<String, dynamic> toJson() => {
-        'date': date.toIso8601String(),
-        'steps': steps,
-        'caloriesBurned': caloriesBurned,
-      };
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'steps': steps,
+      'caloriesBurned': caloriesBurned,
+    };
+  }
 
-  static FitnessData fromJson(Map<String, dynamic> json) => FitnessData(
-        date: DateTime.parse(json['date'] as String),
-        steps: json['steps'] as int,
-        caloriesBurned: json['caloriesBurned'] as int,
-      );
+  static FitnessData fromJson(Map<String, dynamic> map) {
+    return FitnessData(
+      id: map['id'] as int,
+      steps: map['steps'].toString(),
+      caloriesBurned: map['caloriesBurned'].toString(),
+    );
+  }
 }
