@@ -18,3 +18,22 @@ class UserError extends UserState {
   UserError(this.message);
 }
 
+class UserRegistrationSuccess extends UserState {}
+
+class UserRegistrationFailure extends UserState {
+  final String error;
+
+  UserRegistrationFailure(this.error);
+}
+
+class LoginInProgress extends UserState {}
+
+class LoginSuccess extends UserState {}
+
+class LoginFailure extends UserState {
+  final String error;
+
+  LoginFailure(this.error);
+}
+
+

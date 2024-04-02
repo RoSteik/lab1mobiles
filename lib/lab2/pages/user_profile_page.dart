@@ -36,6 +36,7 @@ class UserProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     context.read<UserBloc>().add(LoadUser());
 
     return Scaffold(
