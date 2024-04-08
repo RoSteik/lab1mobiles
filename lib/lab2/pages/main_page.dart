@@ -2,9 +2,12 @@ import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_project/lab2/elements/main/pages_list.dart';
 import 'package:my_project/lab2/logic/model/fitness_data.dart';
-import 'package:my_project/lab2/logic/service/tracker/fitness_data_service.dart';
+import 'package:my_project/lab2/pages/utils/main/fitness_data_bloc.dart';
+import 'package:my_project/lab2/pages/utils/main/fitness_data_events.dart';
+import 'package:my_project/lab2/pages/utils/main/fitness_data_states.dart';
 import 'package:my_project/lab2/widgets/custom_bottom_navigation_bar.dart';
 import 'package:my_project/lab2/widgets/custom_drawer.dart';
 
@@ -16,16 +19,18 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  final FitnessDataService _fitnessDataService = FitnessDataService();
-  List<FitnessData> _fitnessDataList = [];
   int _selectedIndex = 0;
 
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
+  late FitnessDataBloc _fitnessDataBloc;
 
   @override
   void initState() {
     super.initState();
-    _loadFitnessDataList();
+
+    _fitnessDataBloc = context.read<FitnessDataBloc>();
+    _fitnessDataBloc.add(LoadFitnessData());
+
     _connectivitySubscription = Connectivity()
         .onConnectivityChanged
         .listen((ConnectivityResult result) {
@@ -89,20 +94,6 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
-  Future<void> _loadFitnessDataList() async {
-    final data = await _fitnessDataService.loadFitnessDataList();
-    setState(() => _fitnessDataList = data);
-  }
-
-  Future<void> _addFitnessData() async {
-    await _showAddDataDialog();
-  }
-
-  Future<void> _deleteFitnessData(int index) async {
-    await _fitnessDataService.deleteFitnessData(index);
-    _loadFitnessDataList();
-  }
-
   Future<void> _showAddDataDialog() async {
     final idController = TextEditingController();
     final stepsController = TextEditingController();
@@ -154,9 +145,10 @@ class _MainPageState extends State<MainPage> {
                   steps: steps,
                   caloriesBurned: calories,
                 );
-                await _fitnessDataService.addFitnessData(newData);
+                BlocProvider.of<FitnessDataBloc>(context)
+                    .add(AddFitnessData(newData));
 
-                _loadFitnessDataList();
+                Navigator.of(context).pop();
               },
             ),
           ],
@@ -168,45 +160,38 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Fitness Tracker'),
-      ),
+      appBar: AppBar(title: const Text('Fitness Tracker')),
       drawer: const CustomDrawer(),
       body: _selectedIndex == 1
-          ? FutureBuilder<List<FitnessData>>(
-              future: _fitnessDataService.loadFitnessDataList(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
+          ? BlocBuilder<FitnessDataBloc, FitnessDataState>(
+              builder: (context, state) {
+                if (state is FitnessDataLoading) {
                   return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (snapshot.hasData) {
+                } else if (state is FitnessDataLoaded) {
                   return ListView.builder(
-                    itemCount: snapshot.data!.length,
+                    itemCount: state.fitnessDataList.length,
                     itemBuilder: (context, index) {
-                      final item = snapshot.data![index];
+                      final item = state.fitnessDataList[index];
                       return ListTile(
-                        title: Text('Steps: ${item.steps}, '
+                        title: Text('Steps: ${item.steps},'
                             ' Calories Burned: ${item.caloriesBurned}'),
                         trailing: Wrap(
                           spacing: 12,
                           children: [
                             IconButton(
                               icon: const Icon(Icons.delete),
-                              onPressed: () async {
-                                await _fitnessDataService
-                                    .deleteFitnessData(item.id);
-                                setState(() {});
-                              },
+                              onPressed: () => _fitnessDataBloc
+                                  .add(DeleteFitnessData(item.id)),
                             ),
                           ],
                         ),
                       );
                     },
                   );
-                } else {
-                  return const Center(child: Text('No data available'));
+                } else if (state is FitnessDataError) {
+                  return Center(child: Text(state.message));
                 }
+                return const Center(child: Text('No data available'));
               },
             )
           : Center(
@@ -216,7 +201,7 @@ class _MainPageState extends State<MainPage> {
             ),
       floatingActionButton: _selectedIndex == 1
           ? FloatingActionButton(
-              onPressed: _addFitnessData,
+              onPressed: _showAddDataDialog,
               tooltip: 'Add Data',
               child: const Icon(Icons.add),
             )
@@ -227,5 +212,4 @@ class _MainPageState extends State<MainPage> {
       ),
     );
   }
-
 }

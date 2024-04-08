@@ -1,55 +1,14 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_project/lab2/elements/responsive_config.dart';
-import 'package:my_project/lab2/logic/model/user.dart';
-import 'package:my_project/lab2/logic/service/auth/auth_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:my_project/lab2/pages/utils/user/user_bloc.dart';
+import 'package:my_project/lab2/pages/utils/user/user_events.dart';
+import 'package:my_project/lab2/pages/utils/user/user_states.dart';
 
-class UserProfilePage extends StatefulWidget {
+class UserProfilePage extends StatelessWidget {
   const UserProfilePage({super.key});
 
-  @override
-  State<UserProfilePage> createState() => _UserProfilePageState();
-}
-
-class _UserProfilePageState extends State<UserProfilePage> {
-  User? _user;
-  final AuthService _authService = AuthService();
-
-  @override
-  void initState() {
-    super.initState();
-    _loadUserData();
-  }
-
-  Future<void> _loadUserData() async {
-    final prefs = await SharedPreferences.getInstance();
-    final lastLoggedInUser = prefs.getString('lastLoggedInUser');
-
-    if (lastLoggedInUser != null) {
-      final userString = prefs.getString(lastLoggedInUser);
-      if (userString != null) {
-        final Map<String, dynamic> userMap =
-            jsonDecode(userString) as Map<String, dynamic>;
-        setState(() {
-          _user = User.fromJson(userMap);
-        });
-      }
-    }
-  }
-
-  Future<void> _logout() async {
-    await _authService.logout();
-    if (mounted) {
-      Navigator.of(context).pop();
-    }
-    if (mounted) {
-      Navigator.pushReplacementNamed(context, '/login');
-    }
-  }
-
-  void _showLogoutConfirmationDialog() {
+  void _showLogoutConfirmationDialog(BuildContext context) {
     showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -59,13 +18,15 @@ class _UserProfilePageState extends State<UserProfilePage> {
           actions: [
             TextButton(
               child: const Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+              onPressed: () => Navigator.of(context).pop(),
             ),
             TextButton(
-              onPressed: _logout,
               child: const Text('Log Out'),
+              onPressed: () {
+                context.read<UserBloc>().add(Logout());
+                Navigator.of(context).pop();
+                Navigator.of(context).pushReplacementNamed('/login');
+              },
             ),
           ],
         );
@@ -75,25 +36,32 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+
+    context.read<UserBloc>().add(LoadUser());
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('User Profile'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pushReplacementNamed(context, '/home'),
+          onPressed: () => Navigator.of(context).pushReplacementNamed('/home'),
         ),
         actions: [
           TextButton(
-            onPressed: _showLogoutConfirmationDialog,
-            child: const Text('Log Out'),
+            onPressed: () => _showLogoutConfirmationDialog(context),
+            child: const Text('Log Out', style: TextStyle(color: Colors.blue)),
           ),
         ],
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: _user != null
-              ? Column(
+      body: BlocBuilder<UserBloc, UserState>(
+        builder: (context, state) {
+          if (state is UserLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is UserLoaded) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     CircleAvatar(
@@ -103,7 +71,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     ),
                     SizedBox(height: ResponsiveConfig.spacing(context)),
                     Text(
-                      'Name: ${_user!.name}',
+                      'Name: ${state.user.name}',
                       style: TextStyle(
                         fontSize: ResponsiveConfig.fontSizeName(context),
                         fontWeight: FontWeight.bold,
@@ -111,16 +79,21 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     ),
                     SizedBox(height: ResponsiveConfig.spacing(context) / 2),
                     Text(
-                      'Email: ${_user!.email}',
+                      'Email: ${state.user.email}',
                       style: TextStyle(
                         fontSize: ResponsiveConfig.fontSizeEmail(context),
                       ),
                     ),
                     SizedBox(height: ResponsiveConfig.spacing(context)),
                   ],
-                )
-              : const Column(),
-        ),
+                ),
+              ),
+            );
+          } else if (state is UserError) {
+            return Center(child: Text('Error: ${state.message}'));
+          }
+          return const Center(child: Text('No user data available'));
+        },
       ),
     );
   }

@@ -37,7 +37,6 @@ class AuthService {
     }
   }
 
-
   Future<bool> login(String email, String password) async {
     final prefs = await SharedPreferences.getInstance();
     final userString = prefs.getString(email);
@@ -51,10 +50,22 @@ class AuthService {
     return false;
   }
 
-
-
   Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('lastLoggedInUser');
+  }
+
+  Future<User?> getUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    final lastLoggedInUserEmail = prefs.getString('lastLoggedInUser');
+    if (lastLoggedInUserEmail != null) {
+      final userString = prefs.getString(lastLoggedInUserEmail);
+      if (userString != null) {
+        final Map<String, dynamic> userMap =
+            jsonDecode(userString) as Map<String, dynamic>;
+        return User.fromJson(userMap);
+      }
+    }
+    return null;
   }
 }
