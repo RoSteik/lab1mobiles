@@ -45,6 +45,10 @@ dependencies:
   path: ^1.9.0
   provider: ^6.1.2
 
+  flash_light_control_plugin:
+    git:
+      url: https://github.com/RoSteik/flash_light_control_plugin.git
+
 
 dev_dependencies:
   flutter_test:
