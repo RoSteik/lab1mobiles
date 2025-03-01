@@ -3,10 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:my_project/lab2/elements/app_routes.dart';
 import 'package:my_project/lab2/logic/service/auth/auth_service.dart';
 import 'package:my_project/lab2/logic/service/tracker/fitness_data_service.dart';
-import 'package:my_project/lab2/pages/splash_screen.dart';
+// import 'package:my_project/lab2/pages/splash_screen.dart';
 import 'package:my_project/lab2/pages/utils/main/fitness_data_bloc.dart';
 import 'package:my_project/lab2/pages/utils/user/user_bloc.dart';
 import 'package:provider/provider.dart';
+
+import 'lab2/pages/main_page.dart';
 
 void main() => runApp(const MyApp());
 
@@ -40,7 +42,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          home: const SplashScreen(),
+          home: const MainPage(),
           routes: appRoutes,
         ),
       ),
